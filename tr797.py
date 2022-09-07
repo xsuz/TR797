@@ -3,7 +3,7 @@ from numpy import cos,sin,pi,sqrt
 from matplotlib import pyplot as plt
 
 # 定数（既知とするパラメータ）
-N = 100 # 分割数
+N = 128 # 分割数
 l_e = 15.0 # 右翼の長さ
 dS = np.ones(shape=(N))*l_e/(N*2) # パネルの半幅
 rho = 1.2  # 空気の密度 [kg/m^3]
@@ -96,19 +96,21 @@ V_n=np.zeros(shape=(N))
 for i in range(N):
     V_n[i]=np.dot(Q[i], Gamma)
 
-# 単位長さ当たりの揚力を計算 ... (4)
+# 揚力を計算 ... (4)
 local_lift=2*rho*U*Gamma*cos(phi)*dS
 # 各点の曲げモーメントを計算
 local_bending_moment=np.zeros(shape=(N))
 for i in range(N):
     # i番目のパネルより右側のパネルのモーメントを考える。
-    tmp_b_mom=0
-    for j in range(i,N):
-        tmp_b_mom+=local_lift[j]*(y[j]-y[i])
-    local_bending_moment[i]=tmp_b_mom
-# 単位長さ当たりの誘導抗力を計算 ... (6)
-local_induced_drag=2*rho*Gamma*V_n*dS
+    local_bending_moment[i]=np.dot(local_lift[i:],(y[i:]-y[i]))
 
+# 誘導抗力を計算 ... (6)
+local_induced_drag=rho*Gamma*V_n*dS
+
+
+# 結果の表示
+print("lift:{}[N]".format(local_lift.sum()*2))
+print("induced drag:{:2f}[N]".format(local_induced_drag.sum()*2))
 
 # グラフを表示
 plt.rcParams["font.size"] = 6
