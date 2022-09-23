@@ -24,7 +24,20 @@ TR797の論文を参考に最適な循環分布を求めるプログラムを開
 
 ## FLOW CHART
 
-```flow
+```mermaid
+stateDiagram-v2
+    [*] --> y,zからQ[i,j]を求める
+    y,zからQ[i,j]を求める-->変数を正規化
+    変数を正規化-->Lagrange未定乗数法により最適化
+    Lagrange未定乗数法により最適化-->循環分布を求める
+    循環分布を求める --> 収束判定
+    収束判定　--> 循環分布をから翼にかかる空気力を計算 : No
+    循環分布をから翼にかかる空気力を計算 --> y,zからQ[i,j]を求める
+    収束判定 --> 各情報をplot : Yes
+    各情報をplot --> [*]
+```
+
+<!-- ```mermaid
 st=>start: 開始
 e=>end: 終了
 lo1=>inputoutput: y,zからQ[i,j]を求める
@@ -39,4 +52,4 @@ op1=>operation: 各情報をplot
 
 st->lo1->lo2->lo3->lo4->cond(yes)->op1->e
 cond(no)->io_sub1(right)->io_sub2(top)->lo2
-```
+``` -->

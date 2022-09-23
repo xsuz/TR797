@@ -7,8 +7,7 @@ from matplotlib import pyplot as plt
 N = 100 # 分割数
 rho = 1.2  # 空気の密度 [kg/m^3]
 U = 7.2  # 一様流の流速 [m/s]
-Lift=3000.0 # 揚力 [N]
-beta=.85
+Lift=1000.0 # 揚力 [N]
 D=10e-2 # 桁の直径
 E=3e11 # 桁のヤング率
 d=1e-3 # 桁の厚さ
@@ -28,6 +27,7 @@ class Wing:
         self.local_induced_drag=np.zeros(shape=(N)) # パネルに働く誘導抗力
         self.local_lift=np.zeros(shape=(N)) # パネルに働く揚力
         self.V_n=np.zeros(shape=(N)) # パネルの吹きおろし速度
+        self.B_elpl=2/(3*pi)*self.l_e*Lift
     def optim(self):
         y=self.y
         z=self.z
@@ -68,6 +68,7 @@ class Wing:
         b=3*pi/2*(nu*cos(phi)+zeta*sin(phi)) * dsigma  # 翼根の曲げモーメントとスパンの荷重分布を関連付ける定数
         g=np.zeros(shape=(N))  # 揚力分布(今回最適化したい変数) ... (19)
         A=pi*q*dsigma  # ... (22)
+        beta=2500/self.B_elpl
 
         # これらを用いると
         # (揚力固定の条件): \bf{c}^T\cdot\bf{g}=1 ... (23)
